@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="VentaTelefonoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Dispositivo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="marca" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="modelo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="foto" Type="nvarchar" MaxLength="250" />
+          <Property Name="descripcion" Type="ntext" />
+        </EntityType>
+        <EntityType Name="Pujas">
+          <Key>
+            <PropertyRef Name="idPuja" />
+          </Key>
+          <Property Name="idPuja" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idSubasta" Type="int" Nullable="false" />
+          <Property Name="valor" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Subastas">
+          <Key>
+            <PropertyRef Name="idSubasta" />
+          </Key>
+          <Property Name="idSubasta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idDispositivo" Type="int" Nullable="false" />
+          <Property Name="precioInicial" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="fin" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Pujas_Subastas">
+          <End Role="Subastas" Type="Self.Subastas" Multiplicity="1" />
+          <End Role="Pujas" Type="Self.Pujas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subastas">
+              <PropertyRef Name="idSubasta" />
+            </Principal>
+            <Dependent Role="Pujas">
+              <PropertyRef Name="idSubasta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subastas_Dispositivo">
+          <End Role="Dispositivo" Type="Self.Dispositivo" Multiplicity="1" />
+          <End Role="Subastas" Type="Self.Subastas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dispositivo">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Subastas">
+              <PropertyRef Name="idDispositivo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="VentaTelefonoModelStoreContainer">
+          <EntitySet Name="Dispositivo" EntityType="Self.Dispositivo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pujas" EntityType="Self.Pujas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subastas" EntityType="Self.Subastas" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Pujas_Subastas" Association="Self.FK_Pujas_Subastas">
+            <End Role="Subastas" EntitySet="Subastas" />
+            <End Role="Pujas" EntitySet="Pujas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subastas_Dispositivo" Association="Self.FK_Subastas_Dispositivo">
+            <End Role="Dispositivo" EntitySet="Dispositivo" />
+            <End Role="Subastas" EntitySet="Subastas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="VentaTelefonoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Dispositivo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="marca" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="modelo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="foto" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Subastas" Relationship="Self.FK_Subastas_Dispositivo" FromRole="Dispositivo" ToRole="Subastas" />
+        </EntityType>
+        <EntityType Name="Pujas">
+          <Key>
+            <PropertyRef Name="idPuja" />
+          </Key>
+          <Property Name="idPuja" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idSubasta" Type="Int32" Nullable="false" />
+          <Property Name="valor" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Subastas" Relationship="Self.FK_Pujas_Subastas" FromRole="Pujas" ToRole="Subastas" />
+        </EntityType>
+        <EntityType Name="Subastas">
+          <Key>
+            <PropertyRef Name="idSubasta" />
+          </Key>
+          <Property Name="idSubasta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idDispositivo" Type="Int32" Nullable="false" />
+          <Property Name="precioInicial" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="fin" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Dispositivo" Relationship="Self.FK_Subastas_Dispositivo" FromRole="Subastas" ToRole="Dispositivo" />
+          <NavigationProperty Name="Pujas" Relationship="Self.FK_Pujas_Subastas" FromRole="Subastas" ToRole="Pujas" />
+        </EntityType>
+        <Association Name="FK_Subastas_Dispositivo">
+          <End Role="Dispositivo" Type="Self.Dispositivo" Multiplicity="1" />
+          <End Role="Subastas" Type="Self.Subastas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Dispositivo">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Subastas">
+              <PropertyRef Name="idDispositivo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pujas_Subastas">
+          <End Role="Subastas" Type="Self.Subastas" Multiplicity="1" />
+          <End Role="Pujas" Type="Self.Pujas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subastas">
+              <PropertyRef Name="idSubasta" />
+            </Principal>
+            <Dependent Role="Pujas">
+              <PropertyRef Name="idSubasta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="VentaTelefonoEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Dispositivo" EntityType="Self.Dispositivo" />
+          <EntitySet Name="Pujas" EntityType="Self.Pujas" />
+          <EntitySet Name="Subastas" EntityType="Self.Subastas" />
+          <AssociationSet Name="FK_Subastas_Dispositivo" Association="Self.FK_Subastas_Dispositivo">
+            <End Role="Dispositivo" EntitySet="Dispositivo" />
+            <End Role="Subastas" EntitySet="Subastas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pujas_Subastas" Association="Self.FK_Pujas_Subastas">
+            <End Role="Subastas" EntitySet="Subastas" />
+            <End Role="Pujas" EntitySet="Pujas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="VentaTelefonoModelStoreContainer" CdmEntityContainer="VentaTelefonoEntities">
+          <EntitySetMapping Name="Dispositivo">
+            <EntityTypeMapping TypeName="VentaTelefonoModel.Dispositivo">
+              <MappingFragment StoreEntitySet="Dispositivo">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="marca" ColumnName="marca" />
+                <ScalarProperty Name="modelo" ColumnName="modelo" />
+                <ScalarProperty Name="foto" ColumnName="foto" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pujas">
+            <EntityTypeMapping TypeName="VentaTelefonoModel.Pujas">
+              <MappingFragment StoreEntitySet="Pujas">
+                <ScalarProperty Name="idPuja" ColumnName="idPuja" />
+                <ScalarProperty Name="idSubasta" ColumnName="idSubasta" />
+                <ScalarProperty Name="valor" ColumnName="valor" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subastas">
+            <EntityTypeMapping TypeName="VentaTelefonoModel.Subastas">
+              <MappingFragment StoreEntitySet="Subastas">
+                <ScalarProperty Name="idSubasta" ColumnName="idSubasta" />
+                <ScalarProperty Name="idDispositivo" ColumnName="idDispositivo" />
+                <ScalarProperty Name="precioInicial" ColumnName="precioInicial" />
+                <ScalarProperty Name="fin" ColumnName="fin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
