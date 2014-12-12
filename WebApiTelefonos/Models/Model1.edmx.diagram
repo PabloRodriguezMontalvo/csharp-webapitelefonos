@@ -5,11 +5,14 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="111911d08dfd4908891ef3575549fbdc" Name="Diagram1">
-        <EntityTypeShape EntityType="VentaTelefonoModel.Dispositivo" Width="1.5" PointX="0.75" PointY="0.875" IsExpanded="false" />
+        <EntityTypeShape EntityType="VentaTelefonoModel.Dispositivo" Width="1.5" PointX="0.75" PointY="0.875" IsExpanded="true" />
         <EntityTypeShape EntityType="VentaTelefonoModel.Pujas" Width="1.5" PointX="5.25" PointY="1.125" IsExpanded="true" />
         <EntityTypeShape EntityType="VentaTelefonoModel.Subastas" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
         <AssociationConnector Association="VentaTelefonoModel.FK_Subastas_Dispositivo" ManuallyRouted="false" />
         <AssociationConnector Association="VentaTelefonoModel.FK_Pujas_Subastas" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="VentaTelefonoModel.Rol" Width="1.5" PointX="0.75" PointY="5.25" />
+        <EntityTypeShape EntityType="VentaTelefonoModel.Usuario" Width="1.5" PointX="3" PointY="4.875" />
+        <AssociationConnector Association="VentaTelefonoModel.Rol_Usuario" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

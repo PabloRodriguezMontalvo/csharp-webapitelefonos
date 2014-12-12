@@ -10,6 +10,7 @@ using WebApiTelefonos.Models.ViewModel;
 
 namespace WebApiTelefonos.Controllers
 {
+    [Authorize]
     public class DispositivoController : ApiController
     {
 
@@ -28,6 +29,7 @@ namespace WebApiTelefonos.Controllers
         }
 
         // GET: api/Dispositivo/5
+        [Authorize(Roles = "Administrador")]
         public DispositivoViewModel Get(int id)
         {
             return _repositorio.Get(id);

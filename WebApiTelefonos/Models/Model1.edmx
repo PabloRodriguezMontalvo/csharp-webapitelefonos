@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="VentaTelefonoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="VentaTelefonoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Dispositivo">
           <Key>
             <PropertyRef Name="id" />
@@ -23,6 +23,21 @@
           <Property Name="idSubasta" Type="int" Nullable="false" />
           <Property Name="valor" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
+        <EntityType Name="Rol">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Rol_Usuario">
+          <Key>
+            <PropertyRef Name="idRol" />
+            <PropertyRef Name="idUsuario" />
+          </Key>
+          <Property Name="idRol" Type="int" Nullable="false" />
+          <Property Name="idUsuario" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Subastas">
           <Key>
             <PropertyRef Name="idSubasta" />
@@ -31,6 +46,16 @@
           <Property Name="idDispositivo" Type="int" Nullable="false" />
           <Property Name="precioInicial" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="fin" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="login" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="apellido" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <Association Name="FK_Pujas_Subastas">
           <End Role="Subastas" Type="Self.Subastas" Multiplicity="1" />
@@ -41,6 +66,30 @@
             </Principal>
             <Dependent Role="Pujas">
               <PropertyRef Name="idSubasta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rol_Usuario_Rol">
+          <End Role="Rol" Type="Self.Rol" Multiplicity="1" />
+          <End Role="Rol_Usuario" Type="Self.Rol_Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rol">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Rol_Usuario">
+              <PropertyRef Name="idRol" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rol_Usuario_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+          <End Role="Rol_Usuario" Type="Self.Rol_Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Rol_Usuario">
+              <PropertyRef Name="idUsuario" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -59,18 +108,28 @@
         <EntityContainer Name="VentaTelefonoModelStoreContainer">
           <EntitySet Name="Dispositivo" EntityType="Self.Dispositivo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pujas" EntityType="Self.Pujas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rol" EntityType="Self.Rol" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rol_Usuario" EntityType="Self.Rol_Usuario" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Subastas" EntityType="Self.Subastas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Pujas_Subastas" Association="Self.FK_Pujas_Subastas">
             <End Role="Subastas" EntitySet="Subastas" />
             <End Role="Pujas" EntitySet="Pujas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rol_Usuario_Rol" Association="Self.FK_Rol_Usuario_Rol">
+            <End Role="Rol" EntitySet="Rol" />
+            <End Role="Rol_Usuario" EntitySet="Rol_Usuario" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rol_Usuario_Usuario" Association="Self.FK_Rol_Usuario_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="Rol_Usuario" EntitySet="Rol_Usuario" />
           </AssociationSet>
           <AssociationSet Name="FK_Subastas_Dispositivo" Association="Self.FK_Subastas_Dispositivo">
             <End Role="Dispositivo" EntitySet="Dispositivo" />
             <End Role="Subastas" EntitySet="Subastas" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="VentaTelefonoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -141,7 +200,36 @@
             <End Role="Subastas" EntitySet="Subastas" />
             <End Role="Pujas" EntitySet="Pujas" />
           </AssociationSet>
+          <EntitySet Name="Rol" EntityType="VentaTelefonoModel.Rol" />
+          <EntitySet Name="Usuario" EntityType="VentaTelefonoModel.Usuario" />
+          <AssociationSet Name="Rol_Usuario" Association="VentaTelefonoModel.Rol_Usuario">
+            <End Role="Rol" EntitySet="Rol" />
+            <End Role="Usuario" EntitySet="Usuario" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Rol">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Usuario" Relationship="VentaTelefonoModel.Rol_Usuario" FromRole="Rol" ToRole="Usuario" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="login" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="apellido" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Rol" Relationship="VentaTelefonoModel.Rol_Usuario" FromRole="Usuario" ToRole="Rol" />
+        </EntityType>
+        <Association Name="Rol_Usuario">
+          <End Type="VentaTelefonoModel.Rol" Role="Rol" Multiplicity="*" />
+          <End Type="VentaTelefonoModel.Usuario" Role="Usuario" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -178,6 +266,33 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Rol">
+            <EntityTypeMapping TypeName="VentaTelefonoModel.Rol">
+              <MappingFragment StoreEntitySet="Rol">
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuario">
+            <EntityTypeMapping TypeName="VentaTelefonoModel.Usuario">
+              <MappingFragment StoreEntitySet="Usuario">
+                <ScalarProperty Name="apellido" ColumnName="apellido" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="login" ColumnName="login" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Rol_Usuario" TypeName="VentaTelefonoModel.Rol_Usuario" StoreEntitySet="Rol_Usuario">
+            <EndProperty Name="Usuario">
+              <ScalarProperty Name="id" ColumnName="idUsuario" />
+            </EndProperty>
+            <EndProperty Name="Rol">
+              <ScalarProperty Name="id" ColumnName="idRol" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

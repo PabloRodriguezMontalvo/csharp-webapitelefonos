@@ -28,5 +28,7 @@ namespace WebApiTelefonos.Models
         public virtual DbSet<Dispositivo> Dispositivo { get; set; }
         public virtual DbSet<Pujas> Pujas { get; set; }
         public virtual DbSet<Subastas> Subastas { get; set; }
+        public virtual DbSet<Rol> Rol { get; set; }
+        public virtual DbSet<Usuario> Usuario { get; set; }
     }
 }

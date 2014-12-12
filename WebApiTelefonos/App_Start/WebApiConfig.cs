@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using WebApiTelefonos.Extensions;
+using WebApiTelefonos.Models;
 
 namespace WebApiTelefonos
 {
@@ -19,6 +21,10 @@ namespace WebApiTelefonos
             // Web API routes
             config.MapHttpAttributeRoutes();
 
+            config.MessageHandlers.Add(new ManejadorMensajesAutenticacion(
+                new VentaTelefonoEntities()));
+            
+            
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
